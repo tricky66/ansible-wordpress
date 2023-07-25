@@ -1,0 +1,87 @@
+# deploy_wordpress_nginx_docker/tasks/main.yml
+
+---
+
+- name: Create directories for wordpress
+  file:
+    path: "/home/tricky/wordpress"
+    state: directory
+    mode: "0755"
+
+- name: Create directories for wordpress_data
+  file:
+    path: "/home/tricky/wordpress/wordpress_data"
+    state: directory
+    mode: "0755"
+
+- name: Create directories for wp-content
+  file:
+    path: "/home/tricky/wordpress/wp-content/themes"
+    state: directory
+    mode: "0755"
+    owner: www-data
+    group: www-data
+
+- name: Create directories for db_data
+  file:
+    path: "/home/tricky/wordpress/db_data"
+    state: directory
+    mode: "0755"
+
+- name: Create directories for nginx
+  file:
+    path: "/home/tricky/wordpress/nginx"
+    state: directory
+    mode: "0755"
+
+- name: Copy nginx.conf
+  copy:
+    src: "./files/nginx.conf"
+    dest: "/home/tricky/wordpress/nginx/nginx.conf"
+  become: true
+
+- name: Copy docker-compose.yml
+  copy:
+    src: "./docker/docker-compose.yml"
+    dest: "/home/tricky/wordpress/docker-compose.yml"
+  become: true
+
+- name: Copy WordPress environment file
+  copy:
+    src: "./files/wordpress.env"
+    dest: "/home/tricky/wordpress/wordpress.env"
+  become: true
+
+- name: Copy MySQL environment file
+  copy:
+    src: "./files/mysql.env"
+    dest: "/home/tricky/wordpress/mysql.env"
+  become: true
+
+#- name: Create directories for traefik
+#  file:
+#    path: "/home/tricky/wordpress/traefik"
+#    state: directory
+#    mode: "0755"
+
+#- name: Copy Traefik configuration
+#  copy:
+#    src: "./vars/dynamic.yml"
+#    dest: "/home/tricky/wordpress/traefik/dynamic.yml"
+#  become: true
+#
+#- name: Copy Traefik configuration
+#  copy:
+#    src: "./vars/traefik.yml"
+#    dest: "/home/tricky/wordpress/traefik/traefik.yml"
+#  become: true
+
+- name: Start the WordPress service using Docker Compose
+  command: docker-compose -f /home/tricky/wordpress/docker-compose.yml --env-file /home/tricky/wordpress/wordpress.env up -d
+  become: true
+  environment:
+    COMPOSE_HTTP_TIMEOUT: "200"
+
+
+
+

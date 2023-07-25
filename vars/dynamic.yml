@@ -1,0 +1,12 @@
+http:
+  routers:
+    wordpress:
+      rule: "Host(`olchon38.ru`)"
+      entryPoints:
+        - websecure
+      service: wordpress
+  services:
+    wordpress:
+      loadBalancer:
+        servers:
+          - url: "http://wordpress_app:80"  # This should match the WordPress service name defined in the docker-compose.yml

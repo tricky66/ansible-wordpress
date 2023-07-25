@@ -1,0 +1,53 @@
+version: '3.3'
+services:
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    ports:
+      - "80:80"     # Expose port 80 to handle HTTP traffic (for Let's Encrypt challenge)
+      - "443:443"   # Expose port 443 to handle HTTPS traffic
+      - "8080:8080" # Expose port 8080 for Traefik dashboard (optional)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik:/etc/traefik
+    command:
+      - --api.insecure=false # Enable HTTPS for Traefik dashboard (change to 'true' for testing, but 'false' in production)
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --certificatesresolvers.default.acme.email=killthemangaro@gmail.com
+      - --certificatesresolvers.default.acme.storage=/etc/traefik/acme.json
+      - --certificatesresolvers.default.acme.httpchallenge.entrypoint=http
+      - --certificatesresolvers.default.acme.httpchallenge=true
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress
+    restart: always
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wp-content/themes/:/var/www/html/wp-content/themes/
+    env_file:
+      - wordpress.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wordpress.rule=Host(`olkhon38.ru`)"  # Replace 'olchon.ru' with your actual domain
+      - "traefik.http.routers.wordpress.entrypoints=https"
+      - "traefik.http.routers.wordpress.tls=true"
+      - "traefik.http.routers.wordpress.tls.certresolver=default"
+
+  db:
+    image: mysql:5.7
+    container_name: mysql_db
+    restart: always
+    env_file:
+      - wordpress.env
+      - mysql.env
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  wordpress_data:
+  db_data:
