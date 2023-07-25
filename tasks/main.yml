@@ -58,23 +58,6 @@
     dest: "/home/tricky/wordpress/mysql.env"
   become: true
 
-#- name: Create directories for traefik
-#  file:
-#    path: "/home/tricky/wordpress/traefik"
-#    state: directory
-#    mode: "0755"
-
-#- name: Copy Traefik configuration
-#  copy:
-#    src: "./vars/dynamic.yml"
-#    dest: "/home/tricky/wordpress/traefik/dynamic.yml"
-#  become: true
-#
-#- name: Copy Traefik configuration
-#  copy:
-#    src: "./vars/traefik.yml"
-#    dest: "/home/tricky/wordpress/traefik/traefik.yml"
-#  become: true
 
 - name: Start the WordPress service using Docker Compose
   command: docker-compose -f /home/tricky/wordpress/docker-compose.yml --env-file /home/tricky/wordpress/wordpress.env up -d
