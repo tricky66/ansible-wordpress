@@ -1,7 +1,7 @@
 http:
   routers:
     wordpress:
-      rule: "Host(`olchon38.ru`)"
+      rule: "Host(`test.test`)"
       entryPoints:
         - websecure
       service: wordpress
