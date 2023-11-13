@@ -5,9 +5,9 @@ services:
     container_name: traefik
     restart: unless-stopped
     ports:
-      - "80:80"     # Expose port 80 to handle HTTP traffic (for Let's Encrypt challenge)
-      - "443:443"   # Expose port 443 to handle HTTPS traffic
-      - "8080:8080" # Expose port 8080 for Traefik dashboard (optional)
+      - "80:80"     
+      - "443:443"  
+      - "8080:8080" 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik:/etc/traefik
@@ -33,7 +33,7 @@ services:
       - wordpress.env
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.wordpress.rule=Host(`olkhon38.ru`)"  # Replace 'olchon.ru' with your actual domain
+      - "traefik.http.routers.wordpress.rule=Host(`test.test`)"  # Replace 'test.test' with your actual domain
       - "traefik.http.routers.wordpress.entrypoints=https"
       - "traefik.http.routers.wordpress.tls=true"
       - "traefik.http.routers.wordpress.tls.certresolver=default"
