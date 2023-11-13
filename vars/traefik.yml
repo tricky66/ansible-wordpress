@@ -19,7 +19,7 @@ providers:
 certificatesResolvers:
   myresolver:
     acme:
-      email: killthemangaro@gmail.com
+      email: email@
       storage: /data/acme.json
       httpChallenge:
         entryPoint: web
